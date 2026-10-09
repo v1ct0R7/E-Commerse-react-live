@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './Navbar.css'
-import {assets} from '../../assets/assets'
+import {assets} from '../../assets/frontend_assets/assets'
 
 // Krijojn navbar dhe e importojm ne app.jsx
 const Navbar = () => {
@@ -17,9 +17,9 @@ const Navbar = () => {
         <li onClick={()=>setMenu("contact-us")} className={menu==="contact-us"?"active":""}>contact us</li>
       </ul>
       <div className="navbar-right">
-        <img src={assets.shopping} alt="" className='shopping'/>
+        <img src={assets.search_icon} alt="" className='shopping'/>
         <div className="navbar-search-icon">
-          <img src={assets.searching} alt="" className='searching'/>
+          <img src={assets.basket_icon} alt="" className='searching'/>
           <div className="dot">
           </div>
         </div>
