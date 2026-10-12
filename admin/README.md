@@ -1,16 +1,39 @@
-# React + Vite
+# 🛠️ Admin Panel - Food Delivery
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Paneli i administrimit për menaxhimin e katalogut të ushqimeve dhe porosive.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 📦 Paketat e Përdorura
 
-## React Compiler
+| Paketa | Përshkrimi i shkurtër |
+| :--- | :--- |
+| **`react`** | Ndërtimi i ndërfaqes së përdoruesit (UI). |
+| **`react-dom`** | Renderimi i komponentëve React në shfletues. |
+| **`react-router`** | Navigimi midis faqeve pa ringarkuar faqen. |
+| **`axios`** | Dërgimi i kërkesave HTTP drejt backend API (shtim, listim, fshirje). |
+| **`react-toastify`** | Njoftime pop-up në ekran për veprimet e suksesshme apo gabimet. |
+| **`vite`** | Zhvillim dhe kompilim i shpejtë i projektit. |
+| **`@vitejs/plugin-react`** | Integrimi i React me Vite dhe Fast Refresh. |
+| **`eslint`** | Kontrolli i pastërtisë dhe rregullave të kodit. |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## ⚙️ Çfarë është bërë deri tani
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Struktura e Panelit**:
+  - `Navbar`: Shiriti kryesor i navigimit me logon dhe foton e profilit.
+  - `Sidebar`: Shiriti anësor me linqet për shtim, listë dhe porosi.
+- **Faqet kryesore**:
+  - `Add (/add)`: Formulari për ngarkimin e imazhit dhe shtimin e produktit me emër, përshkrim, kategori dhe çmim.
+  - `List (/list)`: Shfaqja e të gjitha artikujve me mundësi fshirjeje nga baza e të dhënave.
+  - `Orders (/orders)`: Faqja për menaxhimin dhe statusin e porosive të klientëve.
+
+---
+
+## 🚀 Nisja lokale
+
+```bash
+npm install
+npm run dev
+```

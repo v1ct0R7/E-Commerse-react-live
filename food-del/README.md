@@ -1,16 +1,41 @@
-# React + Vite
+# 🍔 Food Delivery - Client Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplikacioni kryesor i klientit për të shfletuar menynë, zgjedhur artikujt dhe kryer porositë e ushqimit.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 📦 Paketat e Përdorura
 
-## React Compiler
+| Paketa | Përshkrimi i shkurtër |
+| :--- | :--- |
+| **`react`** | Biblioteka bazë për ndërtimin e ndërfaqes së përdoruesit (UI). |
+| **`react-dom`** | Renderimi i komponentëve në DOM të shfletuesit. |
+| **`react-router-dom`** | Rrugëtimi dhe navigimi midis faqeve pa rifreskuar të gjithë faqen. |
+| **`lucide-react`** | Ikona minimale dhe moderne për butonat dhe menytë. |
+| **`vite`** | Zhvillim me performancë të lartë dhe rifreskim të shpejtë në mjedisin lokal. |
+| **`@vitejs/plugin-react`** | Integrimi i React brenda Vite me mbështetje Fast Refresh. |
+| **`eslint`** | Mjet për ruajtjen e rregullave dhe pastërtisë së kodit. |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## ⚙️ Çfarë është bërë deri tani
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Ndërfaqja & Komponentët**:
+  - `Navbar` & `Footer`: Navigimi kryesor dhe informacioni i faqes.
+  - `ExploreMenu`: Shfaqja e kategorive të ndryshme të ushqimit me mundësi filtrimi me një klik.
+  - `FoodDisplay` & `FoodItem`: Kartat e ushqimeve me foto, përshkrim, çmim dhe butonat për shtim/heqje sasie.
+- **Faqet kryesore**:
+  - `Home`: Faqja kryesore me header tërheqës dhe listën e plotë të ushqimeve.
+  - `Cart`: Shporta e blerjeve me llogaritjen e nëntotalit, tarifës së dërgesës dhe shumës totale.
+  - `PlaceOrder`: Formulari për vendosjen e adresës së dërgesës dhe procedimin e porosisë.
+- **Menaxhimi i Gjendjes (State)**:
+  - `StoreContext`: Ruajtja dhe sinkronizimi global i artikujve të shportës nëpër të gjithë komponentët.
+
+---
+
+## 🚀 Nisja lokale
+
+```bash
+npm install
+npm run dev
+```
