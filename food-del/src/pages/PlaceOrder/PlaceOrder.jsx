@@ -42,7 +42,7 @@ const PLaceOrder = () => {
               <p>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2}</p>
             </div>
           </div>
-          <button onClick={() => navigate('/order')}>Proceed to checkout</button>
+          <button type='submit'>Proceed to Payment</button>
         </div>
       </div>
     </form>

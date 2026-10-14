@@ -1,21 +1,21 @@
 import React, { useContext } from 'react'
 import './FoodItem.css'
 import { assets } from '../../assets/frontend_assets/assets'
-import { Star, Plus } from 'lucide-react'
+import { Star } from 'lucide-react'
 import { StoreContext } from '../../context/StoreContext'
 
 
 
-const FoodItem = ({ id, name, price, descriprion, image }) => {
+const FoodItem = ({ id, name, price, description, descriprion, image }) => {
 
-    const {cartItems, addToCart,removeFromCart} = useContext(StoreContext);
+    const {cartItems, addToCart,removeFromCart, url} = useContext(StoreContext);
 
 
     return (
         
         <div className='food-item'>
             <div className="food-item-img-container">
-                <img className='food-item-image' src={image} alt="" />
+                <img className='food-item-image' src={url + "/images/" + image} alt="" />
                 {!cartItems[id]
                     ?<img className='add' onClick={()=>addToCart(id)} src={assets.add_icon_white} alt="" />
                     :<div className='food-item-counter'>
@@ -37,7 +37,7 @@ const FoodItem = ({ id, name, price, descriprion, image }) => {
                     </div>
                 </div>
 
-                <p className="food-item-description">{descriprion}</p>
+                <p className="food-item-description">{description || descriprion}</p>
                 <p className="food-item-price">${price}</p>
             </div>
 

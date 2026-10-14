@@ -25,21 +25,26 @@ const LoginPopUp = ({ setShowLogIn }) => {
     const onLogin = async (event) => {
         event.preventDefault();
         let newUrl = url
-            if (currState==="Login") {
-                newUrl += "/api/user/login"
-            }
-            else{
-                newUrl += "/api/user/register"
-            }
-            const response = await axios.post(newUrl,data);
+        if (currState === "Login") {
+            newUrl += "/api/user/login"
+        }
+        else {
+            newUrl += "/api/user/register"
+        }
+        try {
+            const response = await axios.post(newUrl, data);
             if (response.data.success) {
                 setToken(response.data.token);
                 localStorage.setItem("token", response.data.token)
                 setShowLogIn(false)
             }
-            else{
-                alert(response.data.message)
+            else {
+                alert(response.data.message || "An error occurred")
             }
+        } catch (error) {
+            console.error(error);
+            alert(error.response?.data?.message || "Failed to connect to server")
+        }
     }
 
     return (
@@ -60,7 +65,7 @@ const LoginPopUp = ({ setShowLogIn }) => {
                     <p>By continuing I agree to the terms of use & conditions</p>
                 </div>
                 {currState === "Login"
-                    ? <p>Create a new account? <span onClick={()=>setCurrState("Sign up")}>Click here</span></p>
+                    ? <p>Create a new account? <span onClick={()=>setCurrState("Sign Up")}>Click here</span></p>
                     : <p>Already have an account? <span onClick={()=>setCurrState("Login")}>Login here</span></p>
                 }
             </form>
