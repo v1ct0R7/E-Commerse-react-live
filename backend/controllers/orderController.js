@@ -1,5 +1,5 @@
-import orderModel from "../models/orderModel";
-import userModel from '../models/userModel'
+import orderModel from '../models/orderModel.js'
+import userModel from '../models/userModel.js'
 import Stripe from "stripe"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -19,11 +19,11 @@ const placeOrder = async (req, res) => {
             address: req.body.address
         })
         await newOrder.save();
-        await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
+        await userModel.findByIdAndUpdate(req.body.userId, { cadData: {}, cartData: {} });
 
         const line_items = req.body.items.map((item) => ({
-            price_Data: {
-                currency: "al",
+            price_data: {
+                currency: "eur",
                 product_data: {
                     name: item.name
                 },
@@ -34,7 +34,7 @@ const placeOrder = async (req, res) => {
 
         line_items.push({
             price_data: {
-                currency: "al",
+                currency: "eur",
                 product_data: {
                     name: "Delivery Charges"
                 },
@@ -44,14 +44,13 @@ const placeOrder = async (req, res) => {
         })
 
 
-        const session = await stripe.checkout.session.create({
+        const session = await stripe.checkout.sessions.create({
             line_items: line_items,
             mode: 'payment',
             success_url: `${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
             cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
 
         })
-        s
         res.json({ success: true, session_url: session.url })
 
     } catch (error) {
