@@ -5,7 +5,7 @@
 
 .spinner{
     width: 100px;
-    height: 10px;
+    height: 100px;
     place-self: center;
     border: 5px solid #bdbdbd;
     border-top-color: tomato;
