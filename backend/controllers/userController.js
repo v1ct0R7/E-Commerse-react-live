@@ -5,46 +5,55 @@ import validator from "validator"
 
 // log in
 const loginUser = async (req, res) => {
-    const { email, password } = req.body
+    const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
+    const { password } = req.body
     try {
+        if (!email || typeof password !== "string" || !password || password.length > 128) {
+            return res.status(400).json({ success: false, message: "Email and password are required" });
+        }
         const user = await userModel.findOne({ email })
         if (!user) {
-            return res.json({ success: false, message: "User does not exists" })
+            return res.status(401).json({ success: false, message: "Invalid email or password" })
         }
         const isMatch = await bcrypt.compare(password,user.password)
 
         if (!isMatch) {
-            return res.json({success:false,message:"Invalid credencials"})
+            return res.status(401).json({ success: false, message: "Invalid email or password" })
         }
         const token = createToken(user._id)
-        res.json({ success: true, token })
+        res.json({ success: true, token, role: user.role, name: user.name })
     } catch (error) {
         console.log(error)
-        res.json({success:false,message:"Error"})
+        res.status(500).json({ success: false, message: "Unable to log in" })
     }
 }
 
 const createToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET)
+    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" })
 }
 
 //register user
 
 const registerUser = async (req, res) => {
-    const { name, password, email } = req.body;
+    const name = typeof req.body.name === "string" ? req.body.name.trim() : "";
+    const password = req.body.password;
+    const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
     try {
+        if (!name || name.length > 100 || !email || typeof password !== "string" || !password || password.length > 128) {
+            return res.status(400).json({ success: false, message: "Name, email and password are required" });
+        }
         // checking is user already exists
         const exists = await userModel.findOne({ email })
         if (exists) {
-            return res.json({ success: false, message: "User already exists" })
+            return res.status(409).json({ success: false, message: "User already exists" })
         }
         // validate email format & strong pass
         if (!validator.isEmail(email)) {
-            return res.json({ success: false, message: "Please enter valid email" });
+            return res.status(400).json({ success: false, message: "Please enter a valid email" });
         }
 
         if (password.length < 8) {
-            return res.json({ success: false, message: "Please enter strong password" })
+            return res.status(400).json({ success: false, message: "Password must be at least 8 characters" })
         }
 
         // hashing user password
@@ -58,17 +67,29 @@ const registerUser = async (req, res) => {
         })
         const user = await newUser.save()
         const token = createToken(user._id)
-        res.json({ success: true, token })
+        res.status(201).json({ success: true, token, role: user.role, name: user.name })
 
     } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Error" })
+        console.error(error);
+        if (error.code === 11000) {
+            return res.status(409).json({ success: false, message: "User already exists" });
+        }
+        res.status(500).json({ success: false, message: "Unable to register" })
     }
 }
 
-
+const listUsers = async (req, res) => {
+    try {
+        const users = await userModel.find({}, "name email role createdAt").sort({ createdAt: -1 });
+        res.json({ success: true, data: users });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Unable to load customers" });
+    }
+};
 
 export {
     loginUser,
-    registerUser
+    registerUser,
+    listUsers
 }

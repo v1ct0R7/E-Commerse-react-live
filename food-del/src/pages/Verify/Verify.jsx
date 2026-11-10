@@ -1,38 +1,53 @@
-import React, { useContext, useEffect } from 'react'
-import "./Verify.css"
-import { useNavigate, useSearchParams } from 'react-router'
-import { StoreContext } from "../../context/StoreContext"
-import axios from 'axios'
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { StoreContext } from "../../context/storeContext";
+import axios from "axios";
 
 const Verify = () => {
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get("session_id");
+  const cancelled = searchParams.get("cancelled") === "true";
+  const { url, setErrorMessage, t } = useContext(StoreContext);
+  const navigate = useNavigate();
+  const [message, setMessage] = useState("Confirming your payment…");
 
-    const [searchParams, setSearchParams] = useSearchParams()
-    const success = searchParams.get("success")
-    const orderId = searchParams.get("orderId")
-    const { url } = useContext(StoreContext)
-    const navigate = useNavigate()
-
+  useEffect(() => {
+    let active = true;
     const verifyPayment = async () => {
-        const response = await axios.post(url + "/api/order/verify", { success, orderId })
+      if (!sessionId) {
+        setMessage("We couldn’t find your payment session.");
+        return;
+      }
+      try {
+        const response = await axios.post(`${url}/api/order/verify`, { sessionId, cancelled });
+        if (!active) return;
         if (response.data.success) {
-            navigate("/myorders")
+          navigate("/myorders", { replace: true });
+        } else {
+          setMessage(cancelled ? "No worries — your payment was cancelled." : response.data.message || "Payment was not completed.");
         }
-        else {
-            navigate("/")
+      } catch (error) {
+        if (active) {
+          const errorText = error.response?.data?.message || "Unable to confirm payment right now.";
+          setErrorMessage(errorText);
+          setMessage(errorText);
         }
-    }
+      }
+    };
+    verifyPayment();
+    return () => { active = false; };
+  }, [sessionId, cancelled, url, navigate, setErrorMessage]);
 
-    useEffect(() => {
-        verifyPayment()
-    }, [])
+  return (
+    <main className="verify page-shell">
+      <div className="verify-card">
+        <span className="section-kicker">{t("CHECKOUT")}</span>
+        <h1>{t(message)}</h1>
+        <p>{t("Your order status will be available in your account.")}</p>
+        <button onClick={() => navigate(cancelled ? "/cart" : "/myorders")}>{cancelled ? t("Back to cart") : t("View my orders")}</button>
+      </div>
+    </main>
+  );
+};
 
-    console.log(success, orderId)
-
-    return (
-        <div className='verify'>
-            <div className="spinner"></div>
-        </div>
-    )
-}
-
-export default Verify
+export default Verify;

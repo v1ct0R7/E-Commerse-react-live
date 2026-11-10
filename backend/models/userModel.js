@@ -4,8 +4,10 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    cadData: { type: Object, default: {} },
-}, { minimize: false })
+    role: { type: String, enum: ["customer", "admin"], default: "customer" },
+    cartData: { type: Map, of: Number, default: {} },
+    cadData: { type: Object },
+}, { minimize: false, timestamps: true })
 
 const userModel = mongoose.models.user || mongoose.model("user", userSchema);
 export default userModel;

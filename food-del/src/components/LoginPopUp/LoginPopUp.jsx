@@ -1,13 +1,12 @@
-import React, { useContext, useState } from 'react'
-import './LoginPopUp.css'
+import { useContext, useState } from 'react'
 import { assets } from '../../assets/frontend_assets/assets'
-import { StoreContext } from '../../context/StoreContext'
+import { StoreContext } from '../../context/storeContext'
 import axios from 'axios'
 
 
 const LoginPopUp = ({ setShowLogIn }) => {
 
-    const {url,setToken} = useContext(StoreContext)
+    const {url,setToken,setErrorMessage,t} = useContext(StoreContext)
 
     const [currState, setCurrState] = useState("Login")
     const [data,setData]= useState({
@@ -39,11 +38,11 @@ const LoginPopUp = ({ setShowLogIn }) => {
                 setShowLogIn(false)
             }
             else {
-                alert(response.data.message || "An error occurred")
+                setErrorMessage(response.data.message || "An error occurred")
             }
         } catch (error) {
             console.error(error);
-            alert(error.response?.data?.message || "Failed to connect to server")
+            setErrorMessage(error.response?.data?.message || "Failed to connect to server")
         }
     }
 
@@ -51,22 +50,22 @@ const LoginPopUp = ({ setShowLogIn }) => {
         <div className="login-popup">
             <form onSubmit={onLogin} className="login-popup-container">
                 <div className="login-popup-title">
-                    <h2>{currState}</h2>
+                    <h2>{t(currState)}</h2>
                     <img onClick={() => setShowLogIn(false)} src={assets.cross_icon} alt="" />
                 </div>
                 <div className="login-popup-input">
-                    {currState === "Login" ? <></> : <input name='name' onChange={onChangeHandler} value={data.name} type="text" placeholder='Your name' required />}
-                    <input name='email' onChange={onChangeHandler} value={data.email} type="email" placeholder='Your email' required />
-                    <input name='password' onChange={onChangeHandler} value={data.password} type="password" placeholder='Password' required />
+                    {currState === "Login" ? <></> : <input aria-label={t("Your name")} name='name' onChange={onChangeHandler} value={data.name} type="text" placeholder={t("Your name")} required />}
+                    <input aria-label={t("Your email")} name='email' onChange={onChangeHandler} value={data.email} type="email" placeholder={t("Your email")} required />
+                    <input aria-label={t("Password")} name='password' onChange={onChangeHandler} value={data.password} type="password" minLength="8" placeholder={t("Password")} required />
                 </div>
-                <button type='submit'>{currState === "Sign Up" ? "Create account" : "Login"}</button>
+                <button type='submit'>{currState === "Sign Up" ? t("Create account") : t("Login")}</button>
                 <div className="login-popup-condition">
                     <input type="checkbox" required />
-                    <p>By continuing I agree to the terms of use & conditions</p>
+                    <p>{t("By continuing I agree to the terms of use & conditions")}</p>
                 </div>
                 {currState === "Login"
-                    ? <p>Create a new account? <span onClick={()=>setCurrState("Sign Up")}>Click here</span></p>
-                    : <p>Already have an account? <span onClick={()=>setCurrState("Login")}>Login here</span></p>
+                    ? <p>{t("Create a new account?")} <span onClick={()=>setCurrState("Sign Up")}>{t("Click here")}</span></p>
+                    : <p>{t("Already have an account?")} <span onClick={()=>setCurrState("Login")}>{t("Login here")}</span></p>
                 }
             </form>
         </div>

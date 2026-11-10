@@ -1,108 +1,97 @@
-# 🍔 Food Delivery - E-Commerce Platform
+# Food Studio — porosi ushqimi
 
-Një platformë e plotë për porositjen e ushqimit online, e ndërtuar me **MERN stack** (MongoDB, Express, React, Node.js) dhe e ndarë në 3 pjesë kryesore:
-1. **`food-del`** – Aplikacioni i klientit për shfletim dhe porositje.
-2. **`admin`** – Paneli i administratorit për menaxhimin e ushqimeve dhe porosive.
-3. **`backend`** – Serveri dhe REST API me bazën e të dhënave dhe pagesat.
+Projekt MERN për porosi ushqimi, me storefront për klientët, panel administrimi me role dhe REST API me Express/MongoDB. Përfshin dizajn të ri responsive, kërkim e filtrim të menusë, shportë, kupona, pagesë Stripe dhe ndjekje porosie.
 
----
+Storefront-i dhe paneli admin ofrojnë pamje të çelët/errët dhe gjuhët shqip (parazgjedhje) dhe anglisht. Preferencat ruhen lokalisht në shfletues. Emrat dhe përshkrimet e pjatave shfaqen siç janë ruajtur në menu.
 
-## 📁 Struktura e Projektit
+## Struktura
 
 ```text
-FoodDelivery-react-live/
-├── food-del/   # Frontend për klientët (React + Vite)
-├── admin/      # Paneli i menaxhimit për stafin/adminin (React + Vite)
-└── backend/    # Serveri API dhe logjika e biznesit (Node.js + Express + MongoDB)
+food-del/   Aplikacioni i klientëve (React + Vite) — http://localhost:5173
+admin/      Paneli i stafit (React + Vite) — http://localhost:5174
+backend/    API (Express + MongoDB + Stripe) — http://localhost:4000
 ```
 
----
+## Kërkesat
 
-## 1. 🌐 Frontend Klienti (`food-del`)
+- Node.js 20.19+ (ose 22.12+) dhe npm
+- MongoDB lokal ose URI për MongoDB Atlas
+- Çelës testues i Stripe për checkout
 
-Ndërfaqja publike ku klientët shikojnë menynë, zgjedhin ushqimet, shtojnë artikuj në shportë dhe kryejnë porosinë.
+## Nisja lokale
 
-### 📦 Paketat e Përdorura:
-- **`react` & `react-dom`**: Baza për ndërtimin dhe shfaqjen e komponentëve UI.
-- **`react-router-dom`**: Navigimi midis faqeve pa ringarkuar faqen (`/`, `/cart`, `/order`).
-- **`lucide-react`**: Ikona moderne dhe të pastra për UI.
-- **`vite` & `@vitejs/plugin-react`**: Mjedisi i shpejtë i zhvillimit dhe kompilimit.
-- **`eslint`**: Standardizimi dhe kontrolli i cilësisë së kodit.
+Instalo paketat në secilin aplikacion:
 
-### ⚙️ Çfarë është bërë:
-- Faqja kryesore me filtrim sipas kategorive dhe menynë e ushqimeve.
-- Shporta e blerjeve me llogaritje automatike të çmimit.
-- Menaxhimi i gjendjes globale me React Context API.
-- Faqja e konfirmimit dhe vendosjes së porosisë (`PlaceOrder`).
-
----
-
-## 2. 🛠️ Paneli i Administratorit (`admin`)
-
-Ndërfaqja e dedikuar për stafin për të menaxhuar të gjithë katalogun e ushqimeve dhe porositë.
-
-### 📦 Paketat e Përdorura:
-- **`react` & `react-dom`**: Ndërtimi i ndërfaqes së panelit administrativ.
-- **`react-router`**: Rrugëtimi i faqeve të panelit (`/add`, `/list`, `/orders`).
-- **`axios`**: Dërgimi i kërkesave HTTP drejt backend-it (ngarkim imazhesh, marrje/fshirje produktesh).
-- **`react-toastify`**: Njoftime vizuale në ekran për veprimet (sukses ose gabim).
-- **`vite` & `@vitejs/plugin-react`**: Serveri lokal dhe mjetet e zhvillimit.
-
-### ⚙️ Çfarë është bërë:
-- **Navbar & Sidebar**: Navigim i shpejtë në panel.
-- **Add Product (`/add`)**: Formular për shtimin e artikujve të rinj me ngarkim fotoje.
-- **List Products (`/list`)**: Tabela me listën e ushqimeve ekzistuese dhe mundësi fshirjeje.
-- **Orders (`/orders`)**: Menaxhimi dhe përcjellja e porosive të bëra nga klientët.
-
----
-
-## 3. ⚙️ Serveri & API (`backend`)
-
-Qendra e logjikës së aplikacionit që trajton ruajtjen e të dhënave, ngarkimin e skedarëve dhe komunikimin me bazën e të dhënave.
-
-### 📦 Paketat e Përdorura:
-- **`express`**: Korniza për krijimin e rrugëve (endpoints) të serverit.
-- **`mongoose`**: Lidhja dhe modelimi i të dhënave me MongoDB.
-- **`cors`**: Lejon komunikimin mes frontend-it, adminit dhe serverit nga porta të ndryshme.
-- **`dotenv`**: Menaxhimi i variablave të fshehtë të mjedisit (`.env`).
-- **`multer`**: Ngarkimi dhe ruajtja e skedarëve/imazheve të ushqimeve në folderin `uploads/`.
-- **`bcrypt`**: Enkriptimi i fjalëkalimeve për ruajtje të sigurt.
-- **`jsonwebtoken` (JWT)**: Autentikimi i përdoruesve me token të sigurt.
-- **`validator`**: Verifikimi i të dhënave (p.sh. formati i email-it).
-- **`stripe`**: Përpunimi i pagesave online me kartë.
-- **`body-parser`**: Leximi dhe interpretimi i trupit të kërkesave HTTP.
-- **`nodemon`**: Rinisja automatike e serverit gjatë ndryshimeve në kod.
-
-### ⚙️ Çfarë është bërë:
-- Konfigurimi i bazës së të dhënave në MongoDB (`config/db.js`).
-- REST API për ushqimet: shtim me imazh, listim dhe fshirje (`/api/food`).
-- Endpoint statik për aksesimin e fotove të ruajtura (`/images`).
-- Struktura bazë e përgatitur për autentikim përdoruesish dhe pagesa me Stripe.
-
----
-
-## 🚀 Si të Nisni Projektin
-
-### 1. Nisni Backend-in
 ```bash
-cd backend
-npm install
-npm run server
-# Serveri nis në http://localhost:4000
+cd backend && npm install
+cd ../food-del && npm install
+cd ../admin && npm install
 ```
 
-### 2. Nisni Panelin Admin
+Krijo skedarët e konfigurimit pa mbishkruar `.env` ekzistues:
+
 ```bash
-cd admin
-npm install
-npm run dev
-# Paneli hapet në http://localhost:5173
+cp -n backend/.env.example backend/.env
+cp -n food-del/.env.example food-del/.env
+cp -n admin/.env.example admin/.env
 ```
 
-### 3. Nisni Klientin (food-del)
+Nëse `.env` ekziston, `cp -n` e lë të paprekur. Shto vetëm çelësat që mungojnë, pa zëvendësuar sekretet që ke ruajtur. Në `backend/.env` vendos `MONGODB_URI` dhe një `JWT_SECRET` të gjatë e unik. Vendos `STRIPE_SECRET_KEY` testues për të aktivizuar pagesat; checkout-i çaktivizohet qëllimisht kur ky çelës mungon. URL-ja e parazgjedhur për API-n është `http://localhost:4000`.
+
+Nise secilin shërbim në terminal më vete:
+
 ```bash
-cd food-del
-npm install
-npm run dev
-# Aplikacioni hapet në portën përkatëse të Vite
+cd backend && npm run dev
+cd food-del && npm run dev
+cd admin && npm run dev
 ```
+
+API-ja fillon të pranojë kërkesa vetëm pasi lidhet me MongoDB. Storefront-i është në portën `5173`, ndërsa paneli në `5174`.
+
+### Krijimi i një administratori
+
+Regjistro fillimisht një llogari normale nga storefront-i, pastaj caktoji rolin administrator direkt në MongoDB. Regjistrimi publik nuk lejon zgjedhjen e rolit:
+
+```javascript
+db.users.updateOne(
+  { email: "admin@example.com" },
+  { $set: { role: "admin" } }
+)
+```
+
+Hyr me atë llogari te paneli admin. Ndryshimet e menusë, menaxhimi i porosive dhe klientëve mbrohen nga API-ja, jo vetëm nga ndërfaqja.
+
+## Endpoint-et kryesore
+
+| Metoda | Rruga | Qasja |
+|---|---|---|
+| `POST` | `/api/user/register`, `/api/user/login` | Publike |
+| `GET` | `/api/food/list` | Publike |
+| `POST` | `/api/food/add`, `/api/food/remove` | Administrator |
+| `POST` | `/api/cart/add`, `/api/cart/remove`, `/api/cart/get`, `/api/cart/sync` | Përdorues i kyçur |
+| `POST` | `/api/order/place`, `/api/order/userorders` | Përdorues i kyçur |
+| `POST` | `/api/order/verify` | Verifikohet nga Stripe |
+| `GET`, `POST` | `/api/order/list`, `/api/order/status` | Administrator |
+| `GET` | `/api/user/list` | Administrator |
+| `POST` | `/api/coupon/validate` | Publike |
+| `GET`, `POST` | `/api/coupon/list`, `/api/coupon/add`, `/api/coupon/remove` | Administrator |
+| `GET` | `/api/settings/public` | Publike |
+| `GET`, `PATCH` | `/api/settings/` | Administrator |
+
+Çmimet dhe totalet e porosive llogariten në server nga artikujt aktualë të MongoDB. Para se porosia të shënohet e paguar, API-ja verifikon sesionin, shumën dhe monedhën te Stripe. Administratorët mund të krijojnë kupona me 1–90% zbritje dhe datë opsionale skadence, si dhe të ndryshojnë tarifën e dërgesës në EUR. Kuponi rillogaritet nga API-ja përpara checkout-it.
+
+## Kontrolli i cilësisë
+
+```bash
+cd food-del && npm run lint && npm run build
+cd admin && npm run lint && npm run build
+cd backend && npm test
+```
+
+Testet e backend-it kontrollojnë validimin e checkout-it, çmimet autoritative dhe llogaritjen e zbritjes pa shërbime të jashtme. Testimi fund-më-fund me MongoDB/Stripe kërkon URI dhe kredenciale testuese të vlefshme; ato nuk përfshihen në repository.
+
+## Shënime për deploy
+
+- Ruaji sekretet dhe konfigurimin e databazës/pagesave në variablat e mjedisit të host-it; mos i bëj commit `.env`.
+- Vendos `FRONTEND_URL` te domeni publik i storefront-it dhe `CORS_ORIGINS` vetëm te domenet reale të klientit dhe panelit.
+- Në prodhim përdor HTTPS, `JWT_SECRET` unik e të fortë, ruajtje të qëndrueshme për fotot dhe webhook-e Stripe për besueshmëri më të mirë të pagesave.
