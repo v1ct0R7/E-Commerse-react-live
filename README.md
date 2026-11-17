@@ -48,6 +48,26 @@ cd admin && npm run dev
 
 API-ja fillon të pranojë kërkesa vetëm pasi lidhet me MongoDB. Storefront-i është në portën `5173`, ndërsa paneli në `5174`.
 
+## Nisja me Docker
+
+Nga dosja `FoodDelivery-react-live`, nise gjithë projektin me Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+Hap storefront-in te `http://localhost:5173`, panelin admin te
+`http://localhost:5174` dhe API-n te `http://localhost:4000`. MongoDB dhe fotot
+e ngarkuara ruhen në volume Docker. Për ta ndalur, shtyp `Ctrl+C`; për t'i
+nisur përsëri në sfond, përdor `docker compose up --build -d`, dhe ndali me
+`docker compose down`.
+
+Për konfigurim lokal, mund të vendosësh `JWT_SECRET` dhe `STRIPE_SECRET_KEY`
+në një skedar `.env` në këtë dosje; pa to, kontejneri përdor një JWT secret
+vetëm për zhvillim dhe pagesat Stripe mbeten të çaktivizuara. Mos përdor
+secret-in e parazgjedhur në deploy. Për të fshirë edhe të dhënat e MongoDB
+dhe fotot, përdor `docker compose down -v`.
+
 ### Krijimi i një administratori
 
 Regjistro fillimisht një llogari normale nga storefront-i, pastaj caktoji rolin administrator direkt në MongoDB. Regjistrimi publik nuk lejon zgjedhjen e rolit:
