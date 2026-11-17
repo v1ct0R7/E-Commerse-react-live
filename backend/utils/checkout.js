@@ -9,9 +9,10 @@ export function getOrderQuantities(requestedItems) {
 
     const quantities = new Map();
     for (const item of requestedItems) {
-        const id = item?._id;
+        // id-ja e ushqimit ne MySQL eshte numer (vjen si numer ose si tekst "5")
+        const id = Number(item?._id);
         const quantity = Number(item?.quantity);
-        if (typeof id !== "string" || !id.trim() || !Number.isInteger(quantity) || quantity < 1) {
+        if (!Number.isInteger(id) || id < 1 || !Number.isInteger(quantity) || quantity < 1) {
             throw new CheckoutInputError("Invalid cart item");
         }
         const nextQuantity = (quantities.get(id) || 0) + quantity;
@@ -29,17 +30,21 @@ export function priceOrderItems(quantities, foods) {
         const price = Number(food.price);
         if (!Number.isFinite(price) || price <= 0) throw new Error("Food item has an invalid stored price");
         return {
-            _id: food._id.toString(),
+            _id: Number(food._id),
             name: food.name,
             price,
-            quantity: quantities.get(food._id.toString()),
+            quantity: quantities.get(Number(food._id)),
         };
     });
 }
 
-export function calculateOrderAmount(items, deliveryFee = DELIVERY_FEE) {
+export function calculateSubtotal(items) {
     const subtotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
-    return Math.round((subtotal + deliveryFee) * 100) / 100;
+    return Math.round(subtotal * 100) / 100;
+}
+
+export function calculateOrderAmount(items, deliveryFee = DELIVERY_FEE) {
+    return Math.round((calculateSubtotal(items) + deliveryFee) * 100) / 100;
 }
 
 export function calculateDiscountedAmount(amount, discountPercent = 0) {

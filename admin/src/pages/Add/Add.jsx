@@ -37,8 +37,15 @@ const Add = ({ url, token }) => {
     setData(data => ({ ...data, [name]: value }))
   }
 
+  const [submitting, setSubmitting] = useState(false);
+
   const onSubmitHandler = async (event) => {
     event.preventDefault()
+    if (!image) {
+      toast.error(t("Please choose an image"));
+      return;
+    }
+    setSubmitting(true)
     try {
       const formData = new FormData();
       formData.append("name", data.name)
@@ -54,7 +61,8 @@ const Add = ({ url, token }) => {
           price: "",
           category: "Salad"
         })
-        setImage(false)
+        selectImage(null)
+        event.target.reset()
         toast.success(response.data.message)
       }
       else {
@@ -62,7 +70,9 @@ const Add = ({ url, token }) => {
       }
     } catch (error) {
       console.error(error)
-      toast.error(error.message)
+      toast.error(error.response?.data?.message || error.message)
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -75,7 +85,7 @@ const Add = ({ url, token }) => {
           <label htmlFor="image">
             <img src={imagePreview || assets.upload_area} alt={image ? t("Selected dish preview") : ""} />
           </label>
-          <input onChange={(e) => selectImage(e.target.files?.[0])} type="file" id='image' accept="image/*" hidden required />
+          <input onChange={(e) => selectImage(e.target.files?.[0])} type="file" id='image' accept="image/*" hidden />
         </div>
         <div className="add-product-name flex-col">
           <p>{t("Product Name")}</p>
@@ -104,7 +114,7 @@ const Add = ({ url, token }) => {
             <input aria-label={t("Product price")} onChange={onChangeHandler} value={data.price} type="number" min="0.01" step="0.01" name='price' placeholder='€12.50' required />
           </div>
         </div>
-        <button type='submit' className='add-btn'>{t("ADD")}</button>
+        <button type='submit' className='add-btn' disabled={submitting}>{submitting ? "…" : t("ADD")}</button>
       </form>
     </div>
   )

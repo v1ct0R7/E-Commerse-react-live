@@ -57,6 +57,7 @@ const Orders = ({ url, token }) => {
                 <p>{order.address?.city}, {order.address?.state}, {order.address?.country}, {order.address?.zipcode}</p>
               </div>
               <p className='order-item-phone'> {order.address?.phone} </p>
+              <p className='order-item-phone'>{new Date(order.date).toLocaleString()}{order.couponCode ? ` · ${order.couponCode}` : ""}</p>
             </div>
             <p>{t("Items:")} {order.items.reduce((total, item) => total + item.quantity, 0)}</p>
             <p>€{Number(order.amount).toFixed(2)}</p>

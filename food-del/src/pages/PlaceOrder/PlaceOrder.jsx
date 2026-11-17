@@ -5,9 +5,10 @@ import { ArrowRight } from "lucide-react";
 import { StoreContext } from "../../context/storeContext";
 
 const PlaceOrder = ({ setShowLogIn }) => {
-  const { getTotalCartAmount, token, food_list, cartItems, url, setErrorMessage, deliveryFee, coupon, t } = useContext(StoreContext);
+  const { getTotalCartAmount, token, food_list, isLoadingMenu, cartItems, url, setErrorMessage, deliveryFee, coupon, t } = useContext(StoreContext);
   const navigate = useNavigate();
   const subtotal = getTotalCartAmount();
+  const discount = coupon ? Math.round((subtotal + deliveryFee) * coupon.discountPercent) / 100 : 0;
   const [submitting, setSubmitting] = useState(false);
   const [data, setData] = useState({
     firstName: "", lastname: "", email: "", street: "", city: "",
@@ -40,8 +41,8 @@ const PlaceOrder = ({ setShowLogIn }) => {
     if (!token) {
       setShowLogIn(true);
       navigate("/cart");
-    } else if (subtotal === 0) navigate("/cart");
-  }, [token, subtotal, navigate, setShowLogIn]);
+    } else if (!isLoadingMenu && subtotal === 0) navigate("/cart");
+  }, [token, subtotal, isLoadingMenu, navigate, setShowLogIn]);
 
   const fields = [
     ["firstName", t("First name")], ["lastname", t("Last name")], ["email", t("Email address")],
@@ -76,8 +77,8 @@ const PlaceOrder = ({ setShowLogIn }) => {
         <h2>{t("Order summary")}</h2>
         <div className="cart-total-details"><p>{t("Subtotal")}</p><p>€{subtotal.toFixed(2)}</p></div>
         <div className="cart-total-details"><p>{t("Delivery")}</p><p>€{deliveryFee.toFixed(2)}</p></div>
-        {coupon && <div className="cart-total-details coupon-savings"><p>{coupon.code} · {coupon.discountPercent}% {t("off")}</p><p>−€{(Math.round((subtotal + deliveryFee) * coupon.discountPercent) / 100).toFixed(2)}</p></div>}
-        <div className="cart-total-details total"><p>{t("Total")}</p><p>€{(subtotal + deliveryFee - (coupon ? Math.round((subtotal + deliveryFee) * coupon.discountPercent) / 100 : 0)).toFixed(2)}</p></div>
+        {coupon && <div className="cart-total-details coupon-savings"><p>{coupon.code} · {coupon.discountPercent}% {t("off")}</p><p>−€{discount.toFixed(2)}</p></div>}
+        <div className="cart-total-details total"><p>{t("Total")}</p><p>€{(subtotal + deliveryFee - discount).toFixed(2)}</p></div>
         <p className="secure-note">{t("Secure checkout powered by Stripe")}</p>
         <button disabled={submitting} type="submit">{submitting ? t("Connecting to checkout…") : t("Continue to secure payment")} <ArrowRight size={17} /></button>
       </aside>

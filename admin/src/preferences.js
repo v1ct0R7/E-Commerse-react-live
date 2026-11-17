@@ -69,6 +69,7 @@ const sq = {
   "Prices and payments are processed in EUR. Payment credentials and permitted frontend domains are configured in the backend environment file.": "Çmimet dhe pagesat kryhen në EUR. Kredencialet e pagesës dhe domenet e lejuara konfigurohen në skedarin e mjedisit të backend-it.",
   "MENU MANAGEMENT": "MENAXHIMI I MENUSË",
   "Add a new dish": "Shto pjatë të re",
+  "Please choose an image": "Zgjidh një foto",
   "Give your next favorite a place on the menu.": "Shto të preferuarën e radhës në menu.",
   "Selected dish preview": "Pamja paraprake e pjatës",
   "Upload Image": "Ngarko imazh",

@@ -1,24 +1,46 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { assets } from '../../assets/frontend_assets/assets'
 import { Link, useNavigate } from "react-router-dom";
 import { StoreContext } from '../../context/storeContext';
-import { Search, ShoppingBag, Sun, Moon } from "lucide-react";
+import { Search, ShoppingBag, Sun, Moon, UserRound, ClipboardList, LogOut, ChevronDown } from "lucide-react";
 
 
 // Krijojn navbar dhe e importojm ne app.jsx
 const Navbar = ({ setShowLogIn }) => {
 
   const [menu, setMenu] = useState("");
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef(null);
 
   const { getTotalCartAmount, token, setToken, setCartItems, setCoupon, searchQuery, setSearchQuery, theme, setTheme, language, setLanguage, t } = useContext(StoreContext)
 
   const navigate = useNavigate()
+  useEffect(() => {
+    if (!profileOpen) return undefined;
+
+    const closeOnOutsideClick = (event) => {
+      if (!profileRef.current?.contains(event.target)) setProfileOpen(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setProfileOpen(false);
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [profileOpen]);
+
   const logout = () =>{
     localStorage.removeItem("token")
+    localStorage.removeItem("guestCart")
     setCartItems({});
     setCoupon(null);
     setToken("");
     setSearchQuery("");
+    setProfileOpen(false);
     navigate("/")
   }
 
@@ -56,14 +78,36 @@ const Navbar = ({ setShowLogIn }) => {
           <div className={getTotalCartAmount() === 0 ? "" : "dot"}>
           </div>
         </div>
-        {!token?<button onClick={() => setShowLogIn(true)}>{t("Sign in")}</button>
-          : <div className='navbar-profile'>
-            <img src={assets.profile_icon} alt={t("Orders")} />
-            <ul className="nav-profile-dropdown">
-              <li onClick={() => navigate('/myorders')}><img src={assets.bag_icon} alt="" /><p>{t("Orders")}</p></li>
-              <hr />
-              <li onClick={logout}><img src={assets.logout_icon} alt="" /><p>{t("Logout")}</p></li>
-            </ul>
+        {!token ? <button onClick={() => setShowLogIn(true)}>{t("Sign in")}</button>
+          : <div className="navbar-profile" ref={profileRef}>
+            <button
+              className="navbar-profile-trigger"
+              type="button"
+              aria-label={t("Account menu")}
+              aria-expanded={profileOpen}
+              aria-haspopup="menu"
+              onClick={() => setProfileOpen((open) => !open)}
+            >
+              <UserRound size={19} aria-hidden="true" />
+              <ChevronDown size={14} aria-hidden="true" />
+            </button>
+            {profileOpen && (
+              <ul className="nav-profile-dropdown" role="menu">
+                <li role="none">
+                  <Link role="menuitem" to="/myorders" onClick={() => setProfileOpen(false)}>
+                    <ClipboardList size={17} aria-hidden="true" />
+                    <span>{t("Orders")}</span>
+                  </Link>
+                </li>
+                <li className="nav-profile-divider" role="separator" />
+                <li role="none">
+                  <button type="button" role="menuitem" onClick={logout}>
+                    <LogOut size={17} aria-hidden="true" />
+                    <span>{t("Logout")}</span>
+                  </button>
+                </li>
+              </ul>
+            )}
           </div>
         }
       </div>

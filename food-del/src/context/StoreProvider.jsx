@@ -3,9 +3,19 @@ import axios from "axios";
 import { StoreContext } from "./storeContext";
 import { translate } from "../i18n";
 
+// shporta e vizitorit (pa login) ruhet ne localStorage qe mos te humbet pas refresh
+const readGuestCart = () => {
+    try {
+        const saved = JSON.parse(localStorage.getItem("guestCart") || "{}");
+        return saved && typeof saved === "object" && !Array.isArray(saved) ? saved : {};
+    } catch {
+        return {};
+    }
+};
+
 const StoreContextProvider = ({ children }) => {
     const url = import.meta.env.VITE_API_URL || "http://localhost:4000";
-    const [cartItems, setCartItems] = useState({});
+    const [cartItems, setCartItems] = useState(() => localStorage.getItem("token") ? {} : readGuestCart());
     const [token, setToken] = useState(() => localStorage.getItem("token") || "");
     const [food_list, setFoodList] = useState([]);
     const [isLoadingMenu, setIsLoadingMenu] = useState(true);
@@ -15,7 +25,7 @@ const StoreContextProvider = ({ children }) => {
     const [errorMessage, setErrorMessage] = useState("");
     const [theme, setTheme] = useState(() => localStorage.getItem("food-studio-theme") === "light" ? "light" : "dark");
     const [language, setLanguage] = useState(() => localStorage.getItem("food-studio-language") === "en" ? "en" : "sq");
-    const anonymousCart = useRef({});
+    const anonymousCart = useRef(localStorage.getItem("token") ? {} : readGuestCart());
 
     useEffect(() => {
         document.documentElement.dataset.theme = theme;
@@ -28,7 +38,10 @@ const StoreContextProvider = ({ children }) => {
     }, [language]);
 
     useEffect(() => {
-        if (!token) anonymousCart.current = cartItems;
+        if (!token) {
+            anonymousCart.current = cartItems;
+            localStorage.setItem("guestCart", JSON.stringify(cartItems));
+        }
     }, [cartItems, token]);
 
     useEffect(() => {
@@ -56,7 +69,7 @@ const StoreContextProvider = ({ children }) => {
         axios.post(`${url}/api/cart/get`, {}, { headers: { token } })
             .then(async (response) => {
                 if (!response.data.success) throw new Error(response.data.message || "Unable to load cart");
-                const savedCart = response.data.cartData || response.data.cadData || {};
+                const savedCart = response.data.cartData || {};
                 if (Object.keys(guestCart).length === 0) {
                     setCartItems(savedCart);
                     return;
@@ -69,6 +82,7 @@ const StoreContextProvider = ({ children }) => {
                 if (!syncResponse.data.success) throw new Error(syncResponse.data.message || "Unable to sync cart");
                 setCartItems(syncResponse.data.cartData);
                 anonymousCart.current = {};
+                localStorage.removeItem("guestCart");
             })
             .catch((error) => {
                 setErrorMessage(error.response?.data?.message || error.message || "Unable to load cart");

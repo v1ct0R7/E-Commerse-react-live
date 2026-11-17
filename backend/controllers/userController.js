@@ -11,7 +11,7 @@ const loginUser = async (req, res) => {
         if (!email || typeof password !== "string" || !password || password.length > 128) {
             return res.status(400).json({ success: false, message: "Email and password are required" });
         }
-        const user = await userModel.findOne({ email })
+        const user = await userModel.findByEmail(email)
         if (!user) {
             return res.status(401).json({ success: false, message: "Invalid email or password" })
         }
@@ -20,10 +20,10 @@ const loginUser = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ success: false, message: "Invalid email or password" })
         }
-        const token = createToken(user._id)
+        const token = createToken(user.id)
         res.json({ success: true, token, role: user.role, name: user.name })
     } catch (error) {
-        console.log(error)
+        console.error(error)
         res.status(500).json({ success: false, message: "Unable to log in" })
     }
 }
@@ -39,11 +39,11 @@ const registerUser = async (req, res) => {
     const password = req.body.password;
     const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
     try {
-        if (!name || name.length > 100 || !email || typeof password !== "string" || !password || password.length > 128) {
+        if (!name || name.length > 100 || !email || email.length > 255 || typeof password !== "string" || !password || password.length > 128) {
             return res.status(400).json({ success: false, message: "Name, email and password are required" });
         }
         // checking is user already exists
-        const exists = await userModel.findOne({ email })
+        const exists = await userModel.findByEmail(email)
         if (exists) {
             return res.status(409).json({ success: false, message: "User already exists" })
         }
@@ -60,18 +60,17 @@ const registerUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newUser = new userModel({
+        const user = await userModel.create({
             name: name,
             email: email,
             password: hashedPassword
         })
-        const user = await newUser.save()
         const token = createToken(user._id)
         res.status(201).json({ success: true, token, role: user.role, name: user.name })
 
     } catch (error) {
         console.error(error);
-        if (error.code === 11000) {
+        if (error.code === "ER_DUP_ENTRY") {
             return res.status(409).json({ success: false, message: "User already exists" });
         }
         res.status(500).json({ success: false, message: "Unable to register" })
@@ -80,7 +79,7 @@ const registerUser = async (req, res) => {
 
 const listUsers = async (req, res) => {
     try {
-        const users = await userModel.find({}, "name email role createdAt").sort({ createdAt: -1 });
+        const users = await userModel.findAll();
         res.json({ success: true, data: users });
     } catch (error) {
         console.error(error);

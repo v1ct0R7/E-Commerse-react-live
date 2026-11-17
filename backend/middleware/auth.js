@@ -8,9 +8,10 @@ const authMiddleware = async (req, res, next) => {
     }
     try {
         const tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await userModel.findById(tokenDecode.id).select("_id role");
+        const user = await userModel.findById(tokenDecode.id);
         if (!user) return res.status(401).json({ success: false, message: "User account not found" });
-        req.user = { id: user._id.toString(), role: user.role };
+        // roli lexohet gjithmone nga databaza, jo nga token-i
+        req.user = { id: user._id, role: user.role };
         next()
     } catch (error) {
         if (error.name === "JsonWebTokenError" || error.name === "TokenExpiredError") {
@@ -18,7 +19,6 @@ const authMiddleware = async (req, res, next) => {
         }
         next(error);
     }
-
 }
 
 export default authMiddleware

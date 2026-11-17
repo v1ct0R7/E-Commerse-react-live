@@ -7,7 +7,7 @@ const Verify = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const cancelled = searchParams.get("cancelled") === "true";
-  const { url, setErrorMessage, t } = useContext(StoreContext);
+  const { url, setErrorMessage, setCartItems, setCoupon, t } = useContext(StoreContext);
   const navigate = useNavigate();
   const [message, setMessage] = useState("Confirming your payment…");
 
@@ -22,6 +22,9 @@ const Verify = () => {
         const response = await axios.post(`${url}/api/order/verify`, { sessionId, cancelled });
         if (!active) return;
         if (response.data.success) {
+          // pagesa u krye: shporta dhe kuponi zbrazen
+          setCartItems({});
+          setCoupon(null);
           navigate("/myorders", { replace: true });
         } else {
           setMessage(cancelled ? "No worries — your payment was cancelled." : response.data.message || "Payment was not completed.");
@@ -36,7 +39,7 @@ const Verify = () => {
     };
     verifyPayment();
     return () => { active = false; };
-  }, [sessionId, cancelled, url, navigate, setErrorMessage]);
+  }, [sessionId, cancelled, url, navigate, setErrorMessage, setCartItems, setCoupon]);
 
   return (
     <main className="verify page-shell">

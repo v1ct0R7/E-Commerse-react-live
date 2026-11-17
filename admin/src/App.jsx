@@ -83,7 +83,11 @@ const App = () => {
   useEffect(() => {
     if (!token) return;
     axios.get(`${url}/api/order/list`, { headers: { token } })
-      .catch(() => logout())
+      .catch((error) => {
+        // dalim vetem kur token-i nuk vlen me; nese serveri eshte i fikur nuk e fshijme
+        if (error.response?.status === 401 || error.response?.status === 403) logout();
+        else toast.error(error.response?.data?.message || "Unable to connect to the server");
+      })
       .finally(() => setChecking(false));
   }, [token, logout]);
 

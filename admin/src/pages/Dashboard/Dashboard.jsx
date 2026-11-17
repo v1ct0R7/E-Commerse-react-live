@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Link } from "react-router";
 import { usePreferences } from "../../preferences";
 
 const Dashboard = ({ url, token }) => {
@@ -39,7 +40,7 @@ const Dashboard = ({ url, token }) => {
       <div className="dashboard-metrics">
         {metrics.map(([label, value, icon, note]) => <article key={label} className="metric-card"><div><span>{label}</span><b aria-hidden="true">{icon}</b></div><strong>{value}</strong><small>{note}</small></article>)}
       </div>
-      <div className="dashboard-section-heading"><div><span className="admin-eyebrow">{t("THE LATEST")}</span><h2>{t("Recent orders")}</h2></div><a href="/orders">{t("View all orders ↗")}</a></div>
+      <div className="dashboard-section-heading"><div><span className="admin-eyebrow">{t("THE LATEST")}</span><h2>{t("Recent orders")}</h2></div><Link to="/orders">{t("View all orders ↗")}</Link></div>
       {recentOrders.length === 0 ? <div className="admin-empty">{t("No orders yet. Your first order will show up here.")}</div> : (
         <div className="dashboard-orders">
           {recentOrders.map((order) => <article key={order._id}><div className="order-avatar">{order.address?.firstName?.[0] || "F"}</div><div><strong>{order.address?.firstName} {order.address?.lastname}</strong><small>{order.items.map((item) => item.name).join(", ")}</small></div><span>{order.payment ? t(order.status) : t("Awaiting payment")}</span><b>€{Number(order.amount).toFixed(2)}</b></article>)}
